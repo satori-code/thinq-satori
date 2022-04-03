@@ -598,7 +598,7 @@
 /*** 사이트 피드백 ***/
 .dev-content #sub-feedback{
     position:relative;
-    padding:20px 0 40px;
+    padding:20px 0 40px 2px;
 }
 .dev-content .site-feedback {
     position:relative;

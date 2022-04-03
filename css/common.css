@@ -38,6 +38,7 @@ a {
     display: inline-block;
     color:#222;
     text-decoration:none;
+    cursor: pointer;
 }
 em {
     font-style:normal;
@@ -47,6 +48,12 @@ i {
     color:#525252;
     font-size: 18px;
     line-height: 18px;
+}
+.img {
+    line-height: 0;
+}
+.img.border {
+    border: 1px solid #d7d7d7;
 }
 .btn {
     display:inline-block;
@@ -308,6 +315,16 @@ i {
 }
 .al-r {
     text-align: right !important;
+}
+
+.vt-t {
+    vertical-align: top !important;
+}
+.vt-m {
+    vertical-align: middle !important;
+}
+.vt-b {
+    vertical-align: bottom !important;
 }
 
 strong, .fw-b{

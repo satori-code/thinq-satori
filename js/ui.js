@@ -173,45 +173,53 @@ UI.onepage = {
 };
 
 UI.nav = {
-  onload: false,
+  onload: true,
   vars: {
     toggleBtn: null,
     box: null,
+    navEl: null,
     navList: null,
     navListHeight: 56,
-    itemHeight: 40,
+    navBtn: null,
+    itemHeight: null,
     itemBottomSpace: 15,
     maxHeight: [],
   },
   init: function () {
     this.vars.toggleBtn = document.querySelectorAll(".nav-drop button");
     this.vars.box = document.querySelectorAll(".nav-drop-box");
+    this.vars.navEl = document.querySelectorAll("#sub-navigator > nav");
     this.vars.navList = document.querySelectorAll(".nav-list > li");
-    if (this.vars.box.length) {
-      UI.nav.fn.dropSetHeight();
-      UI.nav.fn.dropPageMinHeight();
-      UI.nav.fn.dropAni();
+    this.vars.navBtn = document.createElement("button");
+    if (this.vars.navEl.length) {
+      if (UI.nav.vars.box.length) {
+        UI.nav.fn.dropSetHeight();
+        UI.nav.fn.dropAni();
+        // UI.nav.fn.navToggle();
+      }
+      this.vars.navEl[0].classList.add("scroll-content");
     }
   },
   fn: {
-    dropPageMinHeight: function () {
-      var navListTotal;
-      var dropListBottom;
-      var dropListTotal = UI.nav.vars.maxHeight.reduce(function (acc, cur, i) {
-        dropListBottom = UI.nav.vars.itemBottomSpace * i;
-        return acc + cur;
+    navToggle: function () {
+      var navBtnIcon = document.createElement("i");
+      navBtnIcon.classList.add("icon", "fas", "fa-angle-double-right");
+      UI.nav.vars.navBtn.appendChild(navBtnIcon);
+      UI.nav.vars.navBtn.classList.add("btn-nav-toggle");
+      UI.nav.vars.navEl[0].insertBefore(UI.nav.vars.navBtn, null);
+      UI.nav.vars.navBtn.addEventListener("click", function (e) {
+        if (UI.nav.vars.navEl[0].classList.contains("hide")) {
+          UI.nav.vars.navEl[0].classList.add("hide");
+        } else {
+          UI.nav.vars.navEl[0].classList.remove("hide");
+        }
       });
-
-      for (var i = 0; i < UI.nav.vars.navList.length; i++) {
-        navListTotal = UI.nav.vars.navListHeight * i;
-      }
-      document.querySelector("#sub-navigator").style["min-height"] =
-        dropListTotal + navListTotal + "px";
     },
     dropSetHeight: function () {
       Array.prototype.forEach.call(UI.nav.vars.box, function (item, index) {
         var list = item.querySelectorAll("li");
         for (var i = 0; i < list.length; i++) {
+          UI.nav.vars.itemHeight = list[i].getBoundingClientRect().height;
           item.style.height = (i + 1) * parseInt(UI.nav.vars.itemHeight) + "px";
           item.style["transition"] = "height 0.4s ease";
         }
@@ -225,11 +233,14 @@ UI.nav = {
           var nextEl = item.nextElementSibling;
           if (!item.classList.contains("on")) {
             nextEl.style.height = "0px";
+            item.classList.remove("show");
           } else {
+            item.classList.add("show");
             nextEl.style.height =
               UI.nav.vars.maxHeight[index] + UI.nav.vars.itemBottomSpace + "px";
           }
           item.addEventListener("click", function (e) {
+            e.stopPropagation();
             if (e.target.classList.contains("show")) {
               e.target.classList.remove("show");
               nextEl.style.height = "0px";
@@ -248,37 +259,45 @@ UI.nav = {
 };
 
 UI.aside = {
-  onload: false,
+  onload: true,
   vars: {
     cont: null,
     list: null,
     activeLink: null,
     bodyHeight: null,
     headerHeight: 75,
+    subNavigatorPdTop: 50,
   },
   init: function () {
     this.vars.cont = document.querySelector(".sub-aside");
-    this.vars.activeLink = UI.aside.vars.cont.querySelectorAll(".active-link");
-    this.vars.bodyHeight = document.querySelector("body").scrollHeight;
-    UI.aside.fn.scrollPos();
-    UI.aside.fn.scrollAction();
-    window.addEventListener("scroll", function () {
+    if (this.vars.cont) {
+      this.vars.list = UI.aside.vars.cont.querySelector(".aside-list");
+      this.vars.activeLink =
+        UI.aside.vars.cont.querySelectorAll(".active-link");
+      this.vars.bodyHeight = document.querySelector("body").scrollHeight;
+
+      UI.aside.vars.list.classList.add("scroll-content");
       UI.aside.fn.scrollPos();
       UI.aside.fn.scrollAction();
-    });
-    UI.aside.fn.scrollLInk();
+      window.addEventListener("scroll", function () {
+        UI.aside.fn.scrollPos();
+        UI.aside.fn.scrollAction();
+      });
+      UI.aside.fn.scrollLInk();
+    }
   },
   fn: {
     scrollPos: function () {
-      var bodyEl = document.querySelector("body");
-      var bodyTop = bodyEl.getBoundingClientRect().top * -1;
-      var fixTop = document
-        .querySelector("#banner-wrap")
-        .getBoundingClientRect().height;
-      if (bodyTop > fixTop) {
-        UI.aside.vars.cont.style.position = "fixed";
+      var winY = window.pageYOffset;
+      var fixTop = parseInt(
+        document.querySelector("#sub-navigator").getBoundingClientRect().top -
+          UI.aside.vars.subNavigatorPdTop +
+          winY
+      );
+      if (winY > fixTop) {
+        UI.aside.vars.cont.classList.add("fix");
       } else {
-        UI.aside.vars.cont.style.position = "absolute";
+        UI.aside.vars.cont.classList.remove("fix");
       }
     },
     scrollLInk: function () {
@@ -563,6 +582,25 @@ UI.iframe = {
           }
         });
       }
+    },
+  },
+};
+
+UI.scrollTarget = {
+  onload: false,
+  vars: {
+    html: null,
+  },
+  init: function () {},
+  fn: {
+    top: function (target) {
+      var targetEl = document.querySelector("#" + target);
+      var targetPos = window.pageYOffset + targetEl.getBoundingClientRect().top;
+      window.scrollTo({
+        left: 0,
+        top: targetPos,
+        behavior: "smooth",
+      });
     },
   },
 };

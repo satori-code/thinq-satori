@@ -3,7 +3,6 @@
 /*** Base ***/
 #wrapper {
     width: 100%;
-    min-width: 1440px;
     margin: 0 auto;
 }
 
@@ -141,7 +140,6 @@
 /*** Footer ***/
 #footer-wrap {
     position: relative;
-    margin-top: 120px;
     padding: 53px 0 62px;
     box-sizing: border-box;
     background: #f3f3f6;
@@ -266,6 +264,7 @@
 }
 .main-content {
     position: relative;
+    margin-bottom:247px;
 }
 
 /*** Section ***/
@@ -763,7 +762,9 @@ section .fadeIn {
 }
 /*** 사이트 피드백 ***/
 .site-feedback {
-    position:relative;
+    position: relative;
+    margin-left: 310px;
+    margin-right: 260px;
 }
 .site-feedback:after{
     content:"";
